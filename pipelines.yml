@@ -1,5 +1,5 @@
 trigger:
-- main   # Change to master if your repo branch is master
+- master 
 
 pool:
   vmImage: ubuntu-latest
