@@ -11,30 +11,30 @@ variables:
 
 steps:
 
-# ✅ Step 1: Build JAR using Maven
-- task: Maven@3
+# Step 1: Build JAR using Maven (skip Liquibase + tests)
+- task: Maven@4
   inputs:
-    mavenPomFile: 'pom.xml'
+    pomFile: 'pom.xml'
     goals: 'clean package'
-    options: '-DskipTests'
+    options: '-DskipTests -DskipLiquibase=true'
 
-# ✅ Step 2: Build Docker Image
+# Step 2: Build Docker Image
 - script: |
     docker build -t $(imageName):$(imageTag) .
   displayName: Build Docker Image
 
-# ✅ Step 3: Login to ACR
+# Step 3: Login to ACR
 - task: Docker@2
   inputs:
     command: login
     containerRegistry: 'ACR-Service-Connection'
 
-# ✅ Step 4: Tag Docker Image
+# Step 4: Tag Docker Image
 - script: |
     docker tag $(imageName):$(imageTag) $(acrName).azurecr.io/$(imageName):$(imageTag)
   displayName: Tag Image
 
-# ✅ Step 5: Push Docker Image to ACR
+# Step 5: Push Docker Image to ACR
 - script: |
     docker push $(acrName).azurecr.io/$(imageName):$(imageTag)
   displayName: Push Image
